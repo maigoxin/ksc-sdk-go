@@ -1,13 +1,14 @@
 package ksc
 
 import (
-	"fmt"
 	"net/http"
 )
 
 type Credentials struct {
 	AccessKeyID     string
 	SecretAccessKey string
+	Service         string
+	Region          string
 }
 
 func Sign(request *http.Request, credentials ...Credentials) *http.Request {
@@ -20,6 +21,7 @@ func Sign4(request *http.Request, credentials ...Credentials) *http.Request {
 
 	prepareRequestV4(request)
 	meta := new(metadata)
+	meta.service, meta.region = keys.Service, keys.Region
 
 	// Task 1
 	hashedCanonReq := hashedCanonicalRequestV4(request, meta)
@@ -50,5 +52,4 @@ const (
 	envAccessKeyID     = "AWS_ACCESS_KEY_ID"
 	envSecretKey       = "AWS_SECRET_KEY"
 	envSecretAccessKey = "AWS_SECRET_ACCESS_KEY"
-	envSecurityToken   = "AWS_SECURITY_TOKEN"
 )
